@@ -52,8 +52,70 @@ enum UserRole {
   USER
 }
 
+enum PaymentStatus {
+  PAID
+  UNPAID
+  PARTIALLY
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PENDING
+}
+
 model Invoice {
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  id        Int      @id
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  id          Int      @id
+  number      Int
+  year        Int
+  date        DateTime
+  expiredDate DateTime
+  taxRate     Int      @default(0)
+  subTotal    Int      @default(0)
+  total       Int      @default(0)
+  credit      Int      @default(0)
+  discount    Int      @default(0)
+  note        String?
+  pdfPath     String?
+  removed     Boolean  @default(false)
+
+  /// Enums
+  paymentStatus PaymentStatus @default(UNPAID)
+  status        InvoiceStatus @default(DRAFT)
+
+  // Relationships
+  items    InvoiceItem[]
+  payments Payment[]
+}
+
+model InvoiceItem {
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  id          Int      @id
+  removed     Boolean  @default(false)
+  enabled     Boolean  @default(true)
+  name        String
+  description String?
+  price       Int?
+
+  // Relationships
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId Int?
+}
+
+model Payment {
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  id          Int      @id
+  removed     Boolean  @default(false)
+  number      Int
+  date        DateTime @default(now())
+  ref         String?
+  description String?
+
+  // Relationships
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId Int?
 }
