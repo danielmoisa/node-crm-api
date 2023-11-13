@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  id                 Int                @id
+  countryCode        String             @default("us")
+  name               String
+  password           String
+  email              String
+  prefersLanguage    String             @default("en-us")
+  profilePictureUrl  String             @default("https://unavatar.now.sh/fallback.png")
+  timezone           String             @default("America/Los_Angeles")
+  enabled            Boolean            @default(true)
+  prefersColorScheme PrefersColorScheme @default(NO_PREFERENCE)
+  notificationEmail  NotificationEmail  @default(ACCOUNT)
+  gender             Gender             @default(UNKNOWN)
+  role               UserRole           @default(USER)
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONBINARY
+  UNKNOWN
+}
+
+enum NotificationEmail {
+  ACCOUNT
+  UPDATES
+  PROMOTIONS
+}
+
+enum PrefersColorScheme {
+  NO_PREFERENCE
+  LIGHT
+  DARK
+}
+
+enum UserRole {
+  SUDO
+  USER
+}
+
+model Invoice {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id        Int      @id
+}

@@ -6,7 +6,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { join } from 'path';
-import { promises } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -15,9 +14,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
 
-  const pkg = JSON.parse(
-    await promises.readFile(join('.', 'package.json'), 'utf8'),
-  );
+  const pkg = process.env.npm_package_version;
 
   const config = new DocumentBuilder()
     .setTitle('Nest CRM')
