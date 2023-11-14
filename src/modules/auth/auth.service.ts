@@ -49,7 +49,17 @@ export class AuthService {
     const user = await this.usersService.createUser(createUser);
 
     return {
-      token: this.jwtService.sign({ email: user.email }),
+      token: this.jwtService.sign(
+        { email: user.email },
+        { expiresIn: process.env.JWT_EXPIRES_IN },
+      ),
+    };
+  }
+
+  async logOut(user: User) {
+    this.jwtService.sign({ email: user?.email }, { expiresIn: 0 });
+    return {
+      message: `User ${user?.name} was signed out!`,
     };
   }
 }

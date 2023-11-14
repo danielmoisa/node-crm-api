@@ -18,9 +18,6 @@ export class UsersController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   async getCurrentUser(@Req() req) {
-    const currentUser = req.user;
-    return {
-      currentUser,
-    };
+    return await this.usersService.getCurrentUser(req);
   }
 }

@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../../providers/prisma/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -26,5 +27,10 @@ export class UsersService {
     return this.prisma.user.create({
       data: createUserDto,
     });
+  }
+
+  async getCurrentUser(req: { user: User }) {
+    const currentUser = req?.user;
+    return currentUser;
   }
 }
