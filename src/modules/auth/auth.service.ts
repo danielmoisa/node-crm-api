@@ -17,7 +17,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<any> {
+  async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
     const users = await this.prismaService.user.findUnique({
@@ -39,7 +39,7 @@ export class AuthService {
     };
   }
 
-  async register(createDto: RegisterUsersDto): Promise<any> {
+  async register(createDto: RegisterUsersDto) {
     const createUser = new User();
     createUser.name = createDto.name;
     createUser.email = createDto.email;
