@@ -53,7 +53,4 @@ export class CreateInvoiceDto implements Prisma.InvoiceCreateInput {
 
   @IsEnum(InvoiceStatus)
   status: InvoiceStatus = InvoiceStatus.DRAFT;
-
-  @IsInt()
-  userId: number;
 }
