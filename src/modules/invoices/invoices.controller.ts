@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
@@ -14,6 +13,8 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
+import { CurrentUser } from '../users/user.decorator';
+import { User } from '@prisma/client';
 
 @ApiTags('Invoices')
 @Controller('invoices')
@@ -22,20 +23,23 @@ export class InvoicesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createInvoiceDto: CreateInvoiceDto, @Req() req) {
-    return this.invoicesService.create(createInvoiceDto, req);
+  async create(
+    @Body() createInvoiceDto: CreateInvoiceDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.invoicesService.create(createInvoiceDto, user);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(@Req() req) {
-    return this.invoicesService.findAll(req);
+  async findAll(@CurrentUser() user: User) {
+    return this.invoicesService.findAll(user);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string, @Req() req) {
-    return this.invoicesService.findOne(Number(id), req);
+  async findOne(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.invoicesService.findOne(Number(id), user);
   }
 
   @Patch(':id')
@@ -43,14 +47,14 @@ export class InvoicesController {
   update(
     @Param('id') id: string,
     @Body() updateInvoiceDto: UpdateInvoiceDto,
-    @Req() req,
+    @CurrentUser() user,
   ) {
-    return this.invoicesService.update(Number(id), updateInvoiceDto, req);
+    return this.invoicesService.update(Number(id), updateInvoiceDto, user);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string, req) {
-    return this.invoicesService.remove(Number(id), req);
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.invoicesService.remove(Number(id), user);
   }
 }

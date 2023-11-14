@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Req,
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
@@ -10,16 +9,14 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-user.dto';
 import { RegisterUsersDto } from './dto/register-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './auth.guard';
+import { CurrentUser } from '../users/user.decorator';
+import { User } from '@prisma/client';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
   async login(@Body() loginDto: LoginDto) {
@@ -33,10 +30,8 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logOut(@Req() req) {
-    console.log(req.user);
-    const currentUser = await this.usersService.getCurrentUser(req);
-    if (!currentUser) throw new NotFoundException('Current user not found');
-    return await this.authService.logOut(currentUser);
+  async logOut(@CurrentUser() user: User) {
+    if (!user) throw new NotFoundException('Current user not found');
+    return await this.authService.logOut(user);
   }
 }

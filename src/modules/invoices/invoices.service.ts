@@ -3,22 +3,20 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Invoice, User } from '@prisma/client';
 
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
-import { Invoice } from '@prisma/client';
 import { PrismaService } from '../../providers/prisma/prisma.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class InvoicesService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(createInvoiceDto: CreateInvoiceDto, req): Promise<Invoice> {
-    const user = await this.usersService.getCurrentUser(req);
+  async create(
+    createInvoiceDto: CreateInvoiceDto,
+    user: User,
+  ): Promise<Invoice> {
     return await this.prisma.invoice.create({
       data: {
         ...createInvoiceDto,
@@ -27,22 +25,17 @@ export class InvoicesService {
     });
   }
 
-  async findAll(req) {
-    const user = await this.usersService.getCurrentUser(req);
+  async findAll(user) {
     return await this.prisma.invoice.findMany({ where: { userId: user.id } });
   }
 
-  async findOne(id: number, req) {
-    const user = await this.usersService.getCurrentUser(req);
+  async findOne(id: number, user) {
     return await this.prisma.invoice.findFirstOrThrow({
       where: { userId: user.id },
     });
   }
 
-  async update(id: number, updateInvoiceDto: UpdateInvoiceDto, req) {
-    // Get the current user
-    const user = await this.usersService.getCurrentUser(req);
-
+  async update(id: number, updateInvoiceDto: UpdateInvoiceDto, user: User) {
     // Check if the invoice exists and belongs to the current user
     const existingInvoice = await this.prisma.invoice.findUnique({
       where: { id },
@@ -66,8 +59,7 @@ export class InvoicesService {
     });
   }
 
-  async remove(id: number, req) {
-    const user = await this.usersService.getCurrentUser(req);
+  async remove(id: number, user: User) {
     // Check if the invoice exists and belongs to the current user
     const invoice = await this.prisma.invoice.findUnique({
       where: { id },
