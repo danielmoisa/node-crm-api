@@ -1,6 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { UsersService } from './users.service';
 
@@ -11,12 +11,19 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Returns the list of all users.' })
   async getAllUsers() {
     return await this.usersService.getAllUser();
   }
 
   @Get('/me')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the profile of the current authenticated user.',
+  })
   async getCurrentUser(@Req() req) {
     return await this.usersService.getCurrentUser(req);
   }

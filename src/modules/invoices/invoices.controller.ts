@@ -11,7 +11,7 @@ import {
 import { InvoicesService } from './invoices.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../users/user.decorator';
 import { User } from '@prisma/client';
@@ -23,6 +23,12 @@ export class InvoicesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create a new invoice' })
+  @ApiResponse({
+    status: 201,
+    description: 'The invoice has been successfully created.',
+  })
+  @ApiBody({ type: CreateInvoiceDto })
   async create(
     @Body() createInvoiceDto: CreateInvoiceDto,
     @CurrentUser() user: User,
@@ -32,17 +38,34 @@ export class InvoicesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all invoices for the current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the list of invoices for the current user.',
+  })
   async findAll(@CurrentUser() user: User) {
     return this.invoicesService.findAll(user);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get details of a specific invoice' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the details of the specified invoice.',
+  })
+  @ApiResponse({ status: 404, description: 'Invoice not found.' })
   async findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.invoicesService.findOne(Number(id), user);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update details of a specific invoice' })
+  @ApiResponse({
+    status: 200,
+    description: 'The invoice has been successfully updated.',
+  })
+  @ApiResponse({ status: 404, description: 'Invoice not found.' })
   @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
@@ -54,6 +77,12 @@ export class InvoicesController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete a specific invoice' })
+  @ApiResponse({
+    status: 200,
+    description: 'The invoice has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Invoice not found.' })
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.invoicesService.remove(Number(id), user);
   }
