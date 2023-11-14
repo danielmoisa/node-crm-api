@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
@@ -13,5 +13,14 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async getAllUsers() {
     return await this.usersService.getAllUser();
+  }
+
+  @Get('/me')
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUser(@Req() req) {
+    const currentUser = req.user;
+    return {
+      currentUser,
+    };
   }
 }
