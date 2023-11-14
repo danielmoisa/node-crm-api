@@ -1,4 +1,4 @@
-import { InvoiceStatus, PaymentStatus } from '@prisma/client';
+import { InvoiceStatus, PaymentStatus, Prisma } from '@prisma/client';
 import {
   IsBoolean,
   IsDateString,
@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateInvoiceDto {
+export class CreateInvoiceDto implements Prisma.InvoiceCreateInput {
   @IsInt()
   number: number;
 

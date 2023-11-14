@@ -2,6 +2,8 @@ import { ConfigModule } from '@nestjs/config';
 import { InvoicesModule } from './modules/invoices/invoices.module';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from './providers/prisma/prisma.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -9,6 +11,8 @@ import configuration from './config/configuration';
     ConfigModule.forRoot({ load: [configuration] }),
     PrismaModule,
     InvoicesModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
