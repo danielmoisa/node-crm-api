@@ -13,6 +13,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(helmet());
   app.enableCors();
+  app.setGlobalPrefix('api');
 
   const pkg = process.env.npm_package_version;
 
