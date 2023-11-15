@@ -20,7 +20,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Nest CRM')
     .setDescription('The Nest CRM API')
-    .setVersion(pkg)
+    .setVersion(pkg ?? '0.0.1')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

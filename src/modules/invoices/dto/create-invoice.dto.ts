@@ -12,37 +12,37 @@ import {
 export class CreateInvoiceDto implements Prisma.InvoiceCreateInput {
   @IsInt()
   @MaxLength(255)
-  number: number;
+  number!: number;
 
   @IsInt()
   @MaxLength(255)
-  year: number;
+  year!: number;
 
   @IsDateString()
-  date: Date;
+  date!: Date;
 
   @IsDateString()
-  expiredDate: Date;
+  expiredDate!: Date;
 
   @IsInt()
   @MaxLength(255)
-  taxRate: number;
+  taxRate!: number;
 
   @IsInt()
   @MaxLength(255)
-  subTotal: number;
+  subTotal!: number;
 
   @IsInt()
   @MaxLength(255)
-  total: number;
+  total!: number;
 
   @IsInt()
   @MaxLength(255)
-  credit: number;
+  credit!: number;
 
   @IsInt()
   @MaxLength(255)
-  discount: number;
+  discount!: number;
 
   @IsOptional()
   @IsString()

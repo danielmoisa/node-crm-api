@@ -3,13 +3,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Invoice, User } from '@prisma/client';
 import {
   NOT_FOUND,
   UNAUTHORIZED_RESOURCE,
 } from '../../errors/errors.constants';
 
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
+import { Invoice } from '@prisma/client';
 import { PrismaService } from '../../providers/prisma/prisma.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 
@@ -19,26 +19,26 @@ export class InvoicesService {
 
   async create(
     createInvoiceDto: CreateInvoiceDto,
-    user: User,
+    userId: number,
   ): Promise<Invoice> {
     return await this.prisma.invoice.create({
       data: {
         ...createInvoiceDto,
-        User: { connect: { id: user.id } },
+        User: { connect: { id: userId } },
       },
     });
   }
 
-  async findAll(user: User) {
+  async findAll(userId: number) {
     return await this.prisma.invoice.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       include: { items: true },
     });
   }
 
-  async findOne(id: number, user: User) {
+  async findOne(id: number, userId: number) {
     const invoice = await this.prisma.invoice.findFirst({
-      where: { userId: user.id, id: id },
+      where: { userId, id },
       include: { items: true },
     });
 
@@ -47,7 +47,7 @@ export class InvoicesService {
     return invoice;
   }
 
-  async update(id: number, updateInvoiceDto: UpdateInvoiceDto, user: User) {
+  async update(id: number, updateInvoiceDto: UpdateInvoiceDto, userId: number) {
     // Check if the invoice exists and belongs to the current user
     const existingInvoice = await this.prisma.invoice.findUnique({
       where: { id },
@@ -56,7 +56,7 @@ export class InvoicesService {
 
     if (!existingInvoice) throw new NotFoundException(NOT_FOUND);
 
-    if (existingInvoice.userId !== user.id)
+    if (existingInvoice.userId !== userId)
       throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     // Update the invoice
@@ -66,7 +66,7 @@ export class InvoicesService {
     });
   }
 
-  async remove(id: number, user: User) {
+  async remove(id: number, userId: number) {
     // Check if the invoice exists and belongs to the current user
     const invoice = await this.prisma.invoice.findUnique({
       where: { id },
@@ -75,10 +75,10 @@ export class InvoicesService {
 
     if (!invoice) throw new NotFoundException(NOT_FOUND);
 
-    if (invoice.userId !== user.id)
+    if (invoice.userId !== userId)
       throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     // Delete the invoice
-    return this.prisma.invoice.delete({ where: { id, userId: user.id } });
+    return this.prisma.invoice.delete({ where: { id, userId: userId } });
   }
 }

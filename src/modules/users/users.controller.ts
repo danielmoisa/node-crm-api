@@ -3,6 +3,7 @@ import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { UsersService } from './users.service';
+import { Request } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -23,7 +24,7 @@ export class UsersController {
     status: 200,
     description: 'Returns the profile of the current authenticated user.',
   })
-  async getCurrentUser(@Req() req) {
+  async getCurrentUser(@Req() req: Request) {
     return await this.usersService.getCurrentUser(req);
   }
 }

@@ -1,9 +1,9 @@
 import { $Enums, Prisma } from '@prisma/client';
 
 export class User implements Prisma.UserCreateInput {
-  name: string;
-  password: string;
-  email: string;
+  name!: string;
+  password!: string;
+  email!: string;
   countryCode?: string;
   enabled?: boolean;
   gender?: $Enums.Gender;

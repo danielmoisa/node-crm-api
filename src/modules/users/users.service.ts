@@ -3,7 +3,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CONFLIT_EMAIL_ADDRESS } from '../../errors/errors.constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../../providers/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +28,7 @@ export class UsersService {
     });
   }
 
-  async getCurrentUser(req: { user: User }) {
+  async getCurrentUser(req: Request) {
     const currentUser = req?.user;
     return currentUser;
   }

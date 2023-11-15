@@ -10,12 +10,12 @@ import {
 export class CreateItemDto {
   @IsBoolean()
   @IsNotEmpty()
-  enabled: boolean;
+  enabled!: boolean;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  name: string;
+  name!: string;
 
   @IsOptional()
   @IsString()

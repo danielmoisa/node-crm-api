@@ -16,7 +16,7 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 
   @IsEmail()
   @MaxLength(255)
-  email: string;
+  email!: string;
 
   @IsBoolean()
   @IsOptional()
@@ -29,11 +29,11 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 
   @IsString()
   @MaxLength(255)
-  name: string;
+  name!: string;
 
   @IsString()
   @MaxLength(255)
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsEnum($Enums.NotificationEmail)
