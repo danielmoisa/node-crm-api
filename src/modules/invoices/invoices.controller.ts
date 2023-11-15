@@ -34,7 +34,7 @@ export class InvoicesController {
     @Body() createInvoiceDto: CreateInvoiceDto,
     @CurrentUser() user: User,
   ) {
-    return this.invoicesService.create(createInvoiceDto, user.id);
+    return await this.invoicesService.create(createInvoiceDto, user.id);
   }
 
   @Get()
@@ -44,7 +44,7 @@ export class InvoicesController {
     description: 'Returns the list of invoices for the current user.',
   })
   async findAll(@CurrentUser() user: User) {
-    return this.invoicesService.findAll(user.id);
+    return await this.invoicesService.findAll(user.id);
   }
 
   @Get(':id')
@@ -58,7 +58,7 @@ export class InvoicesController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
   ) {
-    return this.invoicesService.findOne(id, user.id);
+    return await this.invoicesService.findOne(id, user.id);
   }
 
   @Patch(':id')
@@ -68,12 +68,12 @@ export class InvoicesController {
     description: 'The invoice has been successfully updated.',
   })
   @ApiResponse({ status: 404, description: 'Invoice not found.' })
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateInvoiceDto: UpdateInvoiceDto,
     @CurrentUser() user: User,
   ) {
-    return this.invoicesService.update(id, updateInvoiceDto, user.id);
+    return await this.invoicesService.update(id, updateInvoiceDto, user.id);
   }
 
   @Delete(':id')
@@ -83,7 +83,13 @@ export class InvoicesController {
     description: 'The invoice has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Invoice not found.' })
-  remove(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: User) {
-    return this.invoicesService.remove(id, user.id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+  ) {
+    return await this.invoicesService.remove(id, user.id);
   }
+
+  // @Get('pdf/:invoiceId')
+  // async generatePdf(@Param('invoiceId', ParseIntPipe) invoceId: number) {}
 }
