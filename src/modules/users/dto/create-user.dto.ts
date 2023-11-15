@@ -5,18 +5,22 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateUserDto implements Prisma.UserCreateInput {
   @IsString()
   @IsOptional()
+  @MaxLength(255)
   countryCode?: string;
 
   @IsEmail()
+  @MaxLength(255)
   email: string;
 
   @IsBoolean()
   @IsOptional()
+  @MaxLength(255)
   enabled?: boolean;
 
   @IsOptional()
@@ -24,9 +28,11 @@ export class CreateUserDto implements Prisma.UserCreateInput {
   gender?: $Enums.Gender;
 
   @IsString()
+  @MaxLength(255)
   name: string;
 
   @IsString()
+  @MaxLength(255)
   password: string;
 
   @IsOptional()
@@ -35,10 +41,12 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 
   @IsString()
   @IsOptional()
+  @MaxLength(255)
   prefersLanguage?: string;
 
   @IsString()
   @IsOptional()
+  @MaxLength(255)
   profilePictureUrl?: string;
 
   @IsEnum($Enums.UserRole)
@@ -47,6 +55,7 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 
   @IsString()
   @IsOptional()
+  @MaxLength(255)
   timezone?: string;
 
   @IsEnum($Enums.PrefersColorScheme)
