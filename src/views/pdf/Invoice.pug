@@ -300,13 +300,15 @@ html
               th PRICE
               th TOTAL
           tbody
-            //- each item in model.items
-            //-   tr
-            //-     td.service #{item.itemName}
-            //-       span #{item.description}
-            //-     td.qty #{item.quantity}  
-            //-     td.unit $ #{item.price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-            //-     td.total $ #{item.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+            if model.items && model.items.length > 0
+              each item in model.items
+                tr
+                  td.service #{item.itemName}
+                    span #{item.description}
+                  td.qty #{item.quantity}  
+                    if item.price
+                      td.unit $ #{item.price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                      //- td.total $ #{item.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
             tr
               td(colspan='3') SUBTOTAL
               td.total $ #{model.subTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}

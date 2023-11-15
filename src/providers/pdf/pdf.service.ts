@@ -1,7 +1,9 @@
 import * as pdf from 'html-pdf';
 import * as pug from 'pug';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, RequestTimeoutException } from '@nestjs/common';
+
+import { GENERATE_PDF_ERROR } from '../../errors/errors.constants';
 import { Invoice } from '@prisma/client';
 import dayjs from 'dayjs';
 import fs from 'node:fs';
@@ -12,10 +14,12 @@ type PdfInfo = {
   format: 'A5' | 'A3' | 'A4' | 'Legal' | 'Letter' | 'Tabloid';
 };
 
+type PdfModelName = 'Invoice' | 'Offer' | 'Payment';
+
 @Injectable()
 export class PdfService {
   async generatePdf(
-    modelName = 'invoice',
+    modelName: PdfModelName,
     info: PdfInfo = { filename: 'pdf_file', format: 'A5' },
     invoice: Invoice,
   ) {
@@ -50,7 +54,7 @@ export class PdfService {
         border: '12mm',
       })
       .toFile(targetLocation, function (error) {
-        if (error) return console.log('this pdf create error ' + error);
+        if (error) throw new RequestTimeoutException(GENERATE_PDF_ERROR);
       });
   }
 }

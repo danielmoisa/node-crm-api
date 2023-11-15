@@ -24,7 +24,9 @@ export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new invoice' })
+  @ApiOperation({
+    summary: 'Create a new invoice and generates a new pdf file',
+  })
   @ApiResponse({
     status: 201,
     description: 'The invoice has been successfully created.',
@@ -89,7 +91,4 @@ export class InvoicesController {
   ) {
     return await this.invoicesService.remove(id, user.id);
   }
-
-  // @Get('pdf/:invoiceId')
-  // async generatePdf(@Param('invoiceId', ParseIntPipe) invoceId: number) {}
 }

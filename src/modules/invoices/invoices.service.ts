@@ -9,6 +9,7 @@ import {
 } from '../../errors/errors.constants';
 
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
+import { PDF_MODEL_NAME } from '../../utils/enums';
 import { PdfService } from '../../providers/pdf/pdf.service';
 import { PrismaService } from '../../providers/prisma/prisma.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
@@ -27,6 +28,9 @@ export class InvoicesService {
         ...createInvoiceDto,
         User: { connect: { id: userId } },
       },
+      include: {
+        items: true,
+      },
     });
 
     // Update new Invoice with pdfPath
@@ -39,8 +43,8 @@ export class InvoicesService {
     });
 
     await this.pdfService.generatePdf(
-      'Invoice',
-      { filename: 'invoice', format: 'A4' },
+      PDF_MODEL_NAME.INVOICE,
+      { filename: PDF_MODEL_NAME.INVOICE, format: 'A4' },
       invoice,
     );
 
@@ -78,10 +82,20 @@ export class InvoicesService {
       throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     // Update the invoice
-    return this.prisma.invoice.update({
+    const updatedInvoice = await this.prisma.invoice.update({
       where: { id },
       data: updateInvoiceDto,
     });
+
+    // Updated pdf file
+    if (updatedInvoice)
+      await this.pdfService.generatePdf(
+        PDF_MODEL_NAME.INVOICE,
+        { filename: PDF_MODEL_NAME.INVOICE, format: 'A4' },
+        updatedInvoice,
+      );
+
+    return updatedInvoice;
   }
 
   async remove(id: number, userId: number) {

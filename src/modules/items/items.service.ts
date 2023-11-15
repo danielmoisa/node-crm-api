@@ -3,12 +3,17 @@ import { InvoiceItem, User } from '@prisma/client';
 
 import { CreateItemDto } from './dto/create-item.dto';
 import { NOT_FOUND } from '../../errors/errors.constants';
+import { PDF_MODEL_NAME } from '../../utils/enums';
+import { PdfService } from '../../providers/pdf/pdf.service';
 import { PrismaService } from '../../providers/prisma/prisma.service';
 import { UpdateItemDto } from './dto/update-item.dto';
 
 @Injectable()
 export class ItemsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly pdfService: PdfService,
+  ) {}
 
   async create(
     createItemDto: CreateItemDto,
@@ -19,6 +24,7 @@ export class ItemsService {
 
     const invoice = await this.prisma.invoice.findUnique({
       where: { id: invoiceId, userId: user.id },
+      include: { items: true },
     });
 
     if (!invoice) throw new NotFoundException(NOT_FOUND);
@@ -32,6 +38,12 @@ export class ItemsService {
         Invoice: { connect: { id: invoice.id } },
       },
     });
+
+    await this.pdfService.generatePdf(
+      PDF_MODEL_NAME.INVOICE,
+      { filename: PDF_MODEL_NAME.INVOICE, format: 'A4' },
+      invoice,
+    );
 
     return newItem;
   }
@@ -94,6 +106,13 @@ export class ItemsService {
       data: updateItemDto,
     });
 
+    if (updatedItem)
+      await this.pdfService.generatePdf(
+        PDF_MODEL_NAME.INVOICE,
+        { filename: PDF_MODEL_NAME.INVOICE, format: 'A4' },
+        invoice,
+      );
+
     return updatedItem;
   }
 
@@ -115,6 +134,13 @@ export class ItemsService {
         id,
       },
     });
+
+    if (deletedItem)
+      await this.pdfService.generatePdf(
+        PDF_MODEL_NAME.INVOICE,
+        { filename: PDF_MODEL_NAME.INVOICE, format: 'A4' },
+        invoice,
+      );
 
     return deletedItem;
   }
