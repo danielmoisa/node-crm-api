@@ -18,11 +18,11 @@ import { User } from '@prisma/client';
 
 @ApiTags('Invoices')
 @Controller('invoices')
+@UseGuards(JwtAuthGuard)
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new invoice' })
   @ApiResponse({
     status: 201,
@@ -37,7 +37,6 @@ export class InvoicesController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all invoices for the current user' })
   @ApiResponse({
     status: 200,
@@ -48,7 +47,6 @@ export class InvoicesController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get details of a specific invoice' })
   @ApiResponse({
     status: 200,
@@ -66,7 +64,6 @@ export class InvoicesController {
     description: 'The invoice has been successfully updated.',
   })
   @ApiResponse({ status: 404, description: 'Invoice not found.' })
-  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateInvoiceDto: UpdateInvoiceDto,
@@ -76,7 +73,6 @@ export class InvoicesController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a specific invoice' })
   @ApiResponse({
     status: 200,

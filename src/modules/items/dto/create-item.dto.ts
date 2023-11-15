@@ -25,7 +25,4 @@ export class CreateItemDto {
   @IsOptional()
   @IsInt()
   price?: number;
-
-  @IsInt()
-  invoiceId: number;
 }

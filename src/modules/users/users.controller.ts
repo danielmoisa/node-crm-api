@@ -6,11 +6,11 @@ import { UsersService } from './users.service';
 
 @ApiTags('Users')
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Returns the list of all users.' })
   async getAllUsers() {
@@ -18,7 +18,6 @@ export class UsersController {
   }
 
   @Get('/me')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({
     status: 200,
