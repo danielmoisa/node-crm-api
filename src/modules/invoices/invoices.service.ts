@@ -30,12 +30,16 @@ export class InvoicesService {
   }
 
   async findAll(user: User) {
-    return await this.prisma.invoice.findMany({ where: { userId: user.id } });
+    return await this.prisma.invoice.findMany({
+      where: { userId: user.id },
+      include: { items: true },
+    });
   }
 
   async findOne(id: number, user: User) {
     const invoice = await this.prisma.invoice.findFirst({
       where: { userId: user.id, id: id },
+      include: { items: true },
     });
 
     if (!invoice) throw new NotFoundException(NOT_FOUND);
