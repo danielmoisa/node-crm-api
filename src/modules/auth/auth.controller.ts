@@ -12,6 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from './auth.guard';
 import { CurrentUser } from '../users/user.decorator';
 import { User } from '@prisma/client';
+import { NOT_FOUND } from '../../errors/errors.constants';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -49,7 +50,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 404, description: 'Current user not found.' })
   async logOut(@CurrentUser() user: User) {
-    if (!user) throw new NotFoundException('Current user not found');
+    if (!user) throw new NotFoundException(NOT_FOUND);
     return await this.authService.logOut(user);
   }
 }

@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { PassportStrategy } from '@nestjs/passport';
 import { PrismaService } from '../../providers/prisma/prisma.service';
+import { UNAUTHORIZED_RESOURCE } from '../../errors/errors.constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -21,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
     });
 
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     return this.prismaService.expose(user);
   }

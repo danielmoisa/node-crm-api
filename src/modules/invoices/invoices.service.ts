@@ -4,6 +4,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Invoice, User } from '@prisma/client';
+import {
+  NOT_FOUND,
+  UNAUTHORIZED_RESOURCE,
+} from '../../errors/errors.constants';
 
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { PrismaService } from '../../providers/prisma/prisma.service';
@@ -25,14 +29,18 @@ export class InvoicesService {
     });
   }
 
-  async findAll(user) {
+  async findAll(user: User) {
     return await this.prisma.invoice.findMany({ where: { userId: user.id } });
   }
 
-  async findOne(id: number, user) {
-    return await this.prisma.invoice.findFirstOrThrow({
-      where: { userId: user.id },
+  async findOne(id: number, user: User) {
+    const invoice = await this.prisma.invoice.findFirst({
+      where: { userId: user.id, id: id },
     });
+
+    if (!invoice) throw new NotFoundException(NOT_FOUND);
+
+    return invoice;
   }
 
   async update(id: number, updateInvoiceDto: UpdateInvoiceDto, user: User) {
@@ -42,15 +50,10 @@ export class InvoicesService {
       include: { User: true },
     });
 
-    if (!existingInvoice) {
-      throw new NotFoundException('Invoice not found');
-    }
+    if (!existingInvoice) throw new NotFoundException(NOT_FOUND);
 
-    if (existingInvoice.userId !== user.id) {
-      throw new UnauthorizedException(
-        'You are not authorized to update this invoice',
-      );
-    }
+    if (existingInvoice.userId !== user.id)
+      throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     // Update the invoice
     return this.prisma.invoice.update({
@@ -66,17 +69,12 @@ export class InvoicesService {
       include: { User: true },
     });
 
-    if (!invoice) {
-      throw new NotFoundException('Invoice not found');
-    }
+    if (!invoice) throw new NotFoundException(NOT_FOUND);
 
-    if (invoice.userId !== user.id) {
-      throw new UnauthorizedException(
-        'You are not authorized to delete this invoice',
-      );
-    }
+    if (invoice.userId !== user.id)
+      throw new UnauthorizedException(UNAUTHORIZED_RESOURCE);
 
     // Delete the invoice
-    return this.prisma.invoice.delete({ where: { id } });
+    return this.prisma.invoice.delete({ where: { id, userId: user.id } });
   }
 }

@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
+import { INVALID_CREDENTIALS, NOT_FOUND } from '../../errors/errors.constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
@@ -25,13 +26,13 @@ export class AuthService {
     });
 
     if (!users) {
-      throw new NotFoundException('user not found');
+      throw new NotFoundException(NOT_FOUND);
     }
 
     const validatePassword = await bcrypt.compare(password, users?.password);
 
     if (!validatePassword) {
-      throw new NotFoundException('Invalid password');
+      throw new NotFoundException(INVALID_CREDENTIALS);
     }
 
     return {
