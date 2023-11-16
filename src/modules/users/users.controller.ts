@@ -15,7 +15,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Returns the list of all users.' })
   async getAllUsers() {
-    return await this.usersService.getAllUser();
+    return await this.usersService.getAllUsers();
   }
 
   @Get('/me')

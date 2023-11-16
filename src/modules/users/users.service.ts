@@ -9,7 +9,7 @@ import { Request } from 'express';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllUser() {
+  async getAllUsers() {
     const users = await this.prisma.user.findMany();
     return this.prisma.expose(users);
   }
